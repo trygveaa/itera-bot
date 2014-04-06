@@ -8,7 +8,7 @@ class GithubCommits
     bot.channels.select { |c|
       channels.include?(c.name)
     }.each { |c|
-      c.send(message)
+      c.send(message, true)
     }
   end
 
