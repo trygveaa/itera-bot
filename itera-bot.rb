@@ -16,10 +16,11 @@ raise "No configuration file found!" unless File.exists?(config_file)
 config = YAML.load_file(config_file)
 
 Signal.trap('HUP') do
-  exec $0, *ARGV, {:close_others => false}
+  ENV['IRC_SERVER_FD'] = @bot.irc.socket.fileno.to_s
+  exec $0, *ARGV, {@bot.irc.socket => @bot.irc.socket}
 end
 
-bot = Cinch::Bot.new do
+@bot = Cinch::Bot.new do
   configure do |c|
     c.nick            = config['nick']
     c.server          = config['server']
@@ -32,4 +33,4 @@ bot = Cinch::Bot.new do
   end
 end
 
-bot.start
+@bot.start

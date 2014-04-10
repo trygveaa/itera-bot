@@ -9,22 +9,13 @@ module Cinch
           @socket              = Net::BufferedIO.new(@socket)
           @socket.read_timeout = @bot.config.timeouts.read
           @queue               = MessageQueue.new(@socket, @bot)
+          true
         rescue ArgumentError
+          connect_original
         end
-      end
-
-      if @socket
-        connect_success = true
       else
-        connect_success = connect_original
+        connect_original
       end
-
-      if connect_success
-        @socket.io.close_on_exec = false
-        ENV['IRC_SERVER_FD'] = @socket.io.fileno.to_s
-      end
-
-      connect_success
     end
   end
 end
