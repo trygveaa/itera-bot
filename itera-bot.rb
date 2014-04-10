@@ -3,6 +3,8 @@
 require 'cinch'
 require 'yaml'
 
+require_relative 'lib/override_cinch_irc_connect'
+
 require_relative 'plugins/http_server'
 require_relative 'plugins/github_commits'
 require_relative 'plugins/op'
@@ -13,11 +15,16 @@ raise "No configuration file found!" unless File.exists?(config_file)
 
 config = YAML.load_file(config_file)
 
+Signal.trap('HUP') do
+  exec $0, *ARGV, {:close_others => false}
+end
+
 bot = Cinch::Bot.new do
   configure do |c|
     c.nick            = config['nick']
     c.server          = config['server']
     c.channels        = config['channels']
+    c.fd              = ENV['IRC_SERVER_FD'].to_i
     c.plugins.plugins = [GithubCommits, OP]
 
     c.plugins.options[GithubCommits] = config['plugins']['github_commits']
