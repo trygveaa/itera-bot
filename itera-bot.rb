@@ -17,7 +17,7 @@ config = YAML.load_file(config_file)
 
 Signal.trap('HUP') do
   ENV['IRC_SERVER_FD'] = @bot.irc.socket.fileno.to_s
-  exec $0, *ARGV, {@bot.irc.socket => @bot.irc.socket}
+  exec 'ruby', $0, *ARGV, {@bot.irc.socket => @bot.irc.socket}
 end
 
 @bot = Cinch::Bot.new do
