@@ -3,7 +3,7 @@
 require 'cinch'
 require 'yaml'
 
-require_relative 'lib/override_cinch_irc_connect'
+require_relative 'lib/override_cinch_irc'
 
 require_relative 'plugins/http_server'
 require_relative 'plugins/github_commits'
