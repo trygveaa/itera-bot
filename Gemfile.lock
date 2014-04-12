@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/badeball/readable-github-webhooks.git
-  revision: e5ec9f693fc4153a9aaa400f0d670fa55885ee02
+  revision: 9dbe40dcb72c78bb0b4e3827472e5e948bbdffba
   specs:
-    readable_github_webhooks (0.0.1)
+    readable_github_webhooks (0.0.2)
 
 GEM
   remote: https://rubygems.org/

@@ -12,13 +12,8 @@ class GithubCommits
     }
   end
 
-  helper :snake_case_repository_name do |payload|
-    identifier = '%s_%s' % [
-      payload['repository']['owner']['name'],
-      payload['repository']['name']
-    ]
-
-    identifier.gsub(/[^a-zA-Z0-9]+/, '_').downcase
+  helper :snake_case_repository_name do |name|
+    name.gsub(/[^a-zA-Z0-9]+/, '_').downcase
   end
 
   helper :channels_for_repository do |repository|
@@ -30,18 +25,16 @@ class GithubCommits
     event    = request.env['HTTP_X_GITHUB_EVENT']
     renderer = ReadableGithubWebhooks::Renderer.new(payload)
 
-    repository        = snake_case_repository_name(payload)
+    repository        = snake_case_repository_name(renderer.owner_and_repository)
     relevant_channels = channels_for_repository(repository)
 
-    if event.eql? 'push'
-      if payload['created']
-        broadcast_to(relevant_channels, renderer.render('create'))
-      elsif payload['deleted']
-        broadcast_to(relevant_channels, renderer.render('delete'))
-      end
-
-      unless payload['commits'].empty?
-        broadcast_to(relevant_channels, renderer.render('push'))
+    if renderer.can_render?(event)
+      if event.eql?('push')
+        unless payload['commits'].empty?
+          broadcast_to(relevant_channels, renderer.render('push'))
+        end
+      else
+        broadcast_to(relevant_channels, renderer.render(event))
       end
     end
 
