@@ -29,6 +29,12 @@ class GithubCommits
     relevant_channels = channels_for_repository(repository)
 
     if renderer.can_render?(event)
+      bot.info 'received %s event for %s, broadcasting to %s' % [
+        event,
+        repository,
+        relevant_channels * ', '
+      ]
+
       if event.eql?('push')
         unless payload['commits'].empty?
           broadcast_to(relevant_channels, renderer.render('push'))
@@ -36,6 +42,11 @@ class GithubCommits
       else
         broadcast_to(relevant_channels, renderer.render(event))
       end
+    else
+      bot.info 'received unsupported %s event for %s' % [
+        event,
+        repository
+      ]
     end
 
     204
