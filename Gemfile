@@ -6,4 +6,4 @@ gem 'sinatra'
 
 gem 'thin'
 
-gem 'readable_github_webhooks', path: '../readable_github_webhooks'
+gem 'readable_github_webhooks', github: 'badeball/readable-github-webhooks'

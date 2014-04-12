@@ -1,5 +1,6 @@
-PATH
-  remote: ../readable_github_webhooks
+GIT
+  remote: git://github.com/badeball/readable-github-webhooks.git
+  revision: e5ec9f693fc4153a9aaa400f0d670fa55885ee02
   specs:
     readable_github_webhooks (0.0.1)
 
