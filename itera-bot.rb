@@ -4,6 +4,7 @@ require 'cinch'
 require 'yaml'
 
 require_relative 'lib/override_cinch_irc'
+require_relative 'lib/string_helpers'
 
 config_file = File.join(File.dirname(__FILE__), 'config.yml')
 
@@ -25,8 +26,7 @@ def list_plugins(plugins)
 end
 
 def get_plugin(plugin_name)
-  return GithubCommits if plugin_name == 'github_commits'
-  return OP if plugin_name == 'op'
+  return Object.const_get(plugin_name.camelize)
 end
 
 Signal.trap('HUP') do
