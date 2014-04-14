@@ -17,16 +17,7 @@ config['plugins'].each do |plugin_config|
 end
 
 def list_plugins(plugins)
-  plugin_objects = [] 
-  plugins.each do |plugin_config|
-    plugin = get_plugin(plugin_config[0])
-    plugin_objects.push(plugin) if plugin
-  end
-  return plugin_objects
-end
-
-def get_plugin(plugin_name)
-  return Object.const_get(plugin_name.camelize)
+  plugins.map { |plugin_config| plugin_config[0].constantize }
 end
 
 Signal.trap('HUP') do
@@ -43,8 +34,7 @@ end
     c.plugins.plugins = list_plugins(config['plugins']) 
 
     config['plugins'].each do |plugin_config|
-      plugin = get_plugin(plugin_config[0])
-      c.plugins.options[plugin] = plugin_config[1] if plugin
+      c.plugins.options[plugin_config[0].constantize] = plugin_config[1]
     end
   end
 end
