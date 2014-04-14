@@ -1,4 +1,4 @@
-class OP
+class Op
   include Cinch::Plugin
 
   match "op"
