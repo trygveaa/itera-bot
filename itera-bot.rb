@@ -12,12 +12,12 @@ raise "No configuration file found!" unless File.exists?(config_file)
 
 config = YAML.load_file(config_file)
 
-config['plugins'].each do |plugin_config|
-  require_relative "plugins/#{plugin_config[0]}"
+config['plugins'].each do |name, plugin_config|
+  require_relative "plugins/#{name}"
 end
 
 def list_plugins(plugins)
-  plugins.map { |plugin_config| plugin_config[0].constantize }
+  plugins.map { |name, plugin_config| name.constantize }
 end
 
 Signal.trap('HUP') do
@@ -33,8 +33,8 @@ end
     c.fd              = ENV['IRC_SERVER_FD'].to_i
     c.plugins.plugins = list_plugins(config['plugins']) 
 
-    config['plugins'].each do |plugin_config|
-      c.plugins.options[plugin_config[0].constantize] = plugin_config[1]
+    config['plugins'].each do |name, plugin_config|
+      c.plugins.options[name.constantize] = plugin_config
     end
   end
 end
