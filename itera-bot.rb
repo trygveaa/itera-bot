@@ -16,10 +16,6 @@ config['plugins'].each do |name, plugin_config|
   require_relative "plugins/#{name}"
 end
 
-def list_plugins(plugins)
-  plugins.map { |name, plugin_config| name.constantize }
-end
-
 Signal.trap('HUP') do
   ENV['IRC_SERVER_FD'] = @bot.irc.socket.fileno.to_s
   exec 'ruby', $0, *ARGV, {@bot.irc.socket => @bot.irc.socket}
@@ -31,7 +27,7 @@ end
     c.server          = config['server']
     c.channels        = config['channels']
     c.fd              = ENV['IRC_SERVER_FD'].to_i
-    c.plugins.plugins = list_plugins(config['plugins']) 
+    c.plugins.plugins = config['plugins'].keys.map(&:constantize)
 
     config['plugins'].each do |name, plugin_config|
       c.plugins.options[name.constantize] = plugin_config
