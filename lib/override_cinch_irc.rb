@@ -12,7 +12,10 @@ module Cinch
           @queue               = MessageQueue.new(@socket, @bot)
 
           ENV['IRC_REGISTRATION'].to_s.split("\n").each { |line| parse_original(line) }
-          @bot.config.channels.each { |channel| send("NAMES #{channel}") }
+          ENV['IRC_CHANNELS'].to_s.split("\n").each do |channel|
+            parse_original(":#{ENV['IRC_BOT_MASK']} JOIN :#{channel}")
+            @bot.irc.socket.write("NAMES #{channel}\r\n")
+          end
 
           true
         rescue ArgumentError

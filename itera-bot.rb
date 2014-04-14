@@ -17,6 +17,8 @@ config['plugins'].each do |name, plugin_config|
 end
 
 Signal.trap('HUP') do
+  ENV['IRC_BOT_MASK']  = @bot.mask.to_s
+  ENV['IRC_CHANNELS']  = @bot.channels.join("\n")
   ENV['IRC_SERVER_FD'] = @bot.irc.socket.fileno.to_s
   exec 'ruby', $0, *ARGV, {@bot.irc.socket => @bot.irc.socket}
 end
