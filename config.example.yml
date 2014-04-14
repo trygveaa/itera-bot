@@ -1,6 +1,0 @@
-nick: 'itera-bot'
-server: 'some-server.com'
-channels:
- - '#some-channel'
-operators:
- - 'some-nick'

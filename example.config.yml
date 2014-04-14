@@ -1,0 +1,14 @@
+nick: 'itera-bot'
+server: 'some-server.com'
+channels:
+ - '#some-channel'
+plugins:
+  github_commits:
+      host: 'example.com'
+      port: 1234
+      repositories:
+        some_repository:
+         - '#some_channel'
+  op:
+    operators:
+      - 'nick'
