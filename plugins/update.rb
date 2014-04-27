@@ -7,14 +7,12 @@ class Update
 
   def execute(m)
     def do_command(channel, command, quiet=false)
-      Open3.popen3(command) do |stdin, stdout_io, stderr_io, wait_thr|
-        stdout = stdout_io.readlines
-        stderr = stderr_io.readlines
-        stdout.each { |line| channel.send line if !quiet } 
-        stderr.each { |line| channel.send line } 
-
-        wait_thr.value.exitstatus == 0
+      IO.popen(command, err: [:child, :out]) do |stdout|
+        stdout.each do |line|
+          channel.send line
+        end
       end
+      $?.exitstatus == 0
     end
 
     if m.channel.opped? m.user
