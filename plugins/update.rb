@@ -1,25 +1,32 @@
 require 'open3'
 
+class StepError < StandardError; end
+
 class Update
   include Cinch::Plugin
 
   match "update"
 
   def execute(m)
-    def do_command(channel, command, quiet=false)
+    def invoke_command(user, command)
       IO.popen(command, err: [:child, :out]) do |stdout|
         stdout.each do |line|
-          channel.send line
+          user.send line
         end
       end
       $?.exitstatus == 0
     end
 
     if m.channel.opped? m.user
-      has_pulled = do_command m.channel, 'git pull --no-stat --ff-only origin master'
-      has_updated_bundle = do_command m.channel, 'bundle update', true if has_pulled
-      m.channel.send has_updated_bundle ? 'Your bundle is updated!' : 'Could not update your bundle'
-      Process.kill('HUP', Process.pid) if has_updated_bundle
+      begin
+        invoke_command(m.user, 'git pull --no-stat --ff-only origin master') or raise StepError
+        invoke_command(m.user, 'bundle update') or raise StepError
+        m.channel.send 'I updated myself, reloading now..'
+      rescue StepError
+        m.channel.send 'I could not update myself'
+      end
+
+      Process.kill('HUP', Process.pid)
     end
   end
 end
