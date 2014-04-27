@@ -8,6 +8,9 @@ class Update
   match("update", method: :update)
   match("reload", method: :reload)
 
+  PULL = 'git pull --no-stat --ff-only origin master'
+  BUNDLE = 'bundle check || bundle update'
+
   def update(m)
     def invoke_command(user, command)
       IO.popen(command, err: [:child, :out]) do |stdout|
@@ -15,13 +18,13 @@ class Update
           user.send line
         end
       end
-      $?.exitstatus == 0
+      raise StepError if $?.exitstatus != 0
     end
 
     if m.channel.opped? m.user
       begin
-        invoke_command(m.user, 'git pull --no-stat --ff-only origin master') or raise StepError
-        invoke_command(m.user, 'bundle update') or raise StepError
+        invoke_command(m.user, PULL)
+        invoke_command(m.user, BUNDLE)
         m.channel.send 'I updated myself, please do !reload..'
       rescue StepError
         m.channel.send 'I could not update myself'
