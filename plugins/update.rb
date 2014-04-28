@@ -1,5 +1,3 @@
-require 'open3'
-
 class StepError < StandardError; end
 
 class Update
