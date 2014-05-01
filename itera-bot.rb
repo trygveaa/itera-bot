@@ -17,6 +17,12 @@ config['plugins'].each do |name, plugin_config|
 end
 
 Signal.trap('HUP') do
+  queue = @bot.irc.instance_variable_get(:@queue).instance_variable_get(:@queues_to_process)
+
+  until queue.empty?
+      sleep 1
+  end
+
   ENV['IRC_BOT_MASK']  = @bot.mask.to_s
   ENV['IRC_CHANNELS']  = @bot.channels.join("\n")
   ENV['IRC_SERVER_FD'] = @bot.irc.socket.fileno.to_s
