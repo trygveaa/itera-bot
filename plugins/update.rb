@@ -23,15 +23,17 @@ class Update
       begin
         invoke_command(m.user, PULL)
         invoke_command(m.user, BUNDLE)
-        m.channel.send 'I updated myself, please do !reload..'
+        m.channel.send 'I updated myself, reloading now.'
+        Process.kill('HUP', Process.pid)
       rescue StepError
-        m.channel.send 'I could not update myself'
+        m.channel.send 'I could not update myself.'
       end
 
     end
   end
 
   def reload(m)
+    m.channel.send 'Reloading now.'
     Process.kill('HUP', Process.pid)
   end
 end
