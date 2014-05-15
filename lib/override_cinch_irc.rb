@@ -19,6 +19,7 @@ module Cinch
 
           true
         rescue ArgumentError, Errno::EBADF
+          ENV.delete('IRC_REGISTRATION')
           connect_original
         end
       else
