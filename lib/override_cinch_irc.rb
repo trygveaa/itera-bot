@@ -18,7 +18,7 @@ module Cinch
           end
 
           true
-        rescue ArgumentError
+        rescue ArgumentError, Errno::EBADF
           connect_original
         end
       else
